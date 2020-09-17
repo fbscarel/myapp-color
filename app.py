@@ -1,32 +1,43 @@
 from flask import Flask
+from flask import render_template
+import argparse
 import os
 import socket
-import argparse
 
 app = Flask(__name__)
 
 color_codes = {
-    "blue":   "#7ac8ee",
-    "green":  "#9eff9a",
-    "pink":   "#f6019d",
-    "purple": "#541388",
-    "red":    "#ff9a9e",
-    "yellow": "#ffca05"
+    'blue':   '#7ac8ee',
+    'green':  '#9eff9a',
+    'pink':   '#f6019d',
+    'purple': '#541388',
+    'red':    '#ff9a9e',
+    'yellow': '#ffca05'
 }
 
-default_port = 80
-
-@app.route("/")
+@app.route('/')
 def hello():
-    html = "<body style="background: { args['color'] };"></body>"
-           "<h3>Hello {hostname}!</h3>" \
-    return html.format(name=os.getenv("NAME", "world"), hostname=socket.gethostname(), visits=visits)
+  return render_template('index.html', hostname=socket.gethostname(),color=color_codes[COLOR])
 
-if __name__ == "__main__":
-  parser = argparse.ArgumentParser(description='Simple webpage with color background.')
-  parser.add_argument('-c', '--color', default='blue', help='Webpage background color')
-  parser.add_argument('-p', '--port', default=80, type=int, help='Port to listen on')
-  parser.parse_args()
+if __name__ == '__main__':
+  parser = argparse.ArgumentParser()
+  parser.add_argument('-c', '--color', default='blue', required=False)
+  args = parser.parse_args()
 
-  app.run(host='0.0.0.0', port=args['port'])
+  # check for envvar 'COLOR'
+  if os.environ.get('COLOR'):
+    COLOR = os.environ.get('COLOR')
+  # check for cmdline arg '--color'; overwrites envvar if set
+  elif args.color:
+    COLOR = args.color
+  # no color found, default to 'blue'
+  else:
+    COLOR = 'blue'
+
+  # check for invalid input
+  if COLOR not in color_codes:
+    print("Invalid color " + COLOR)
+    exit(1)
+
+  app.run(host='0.0.0.0', port=80)
 
