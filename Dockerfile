@@ -1,11 +1,11 @@
 FROM python:3.6-alpine
 
-RUN pip install flask
+WORKDIR /opt
 
 COPY . /opt/
 
-EXPOSE 80
+RUN pip install -r requirements.txt
 
-WORKDIR /opt
+EXPOSE 80
 
 ENTRYPOINT ["python", "app.py"]
