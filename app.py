@@ -17,11 +17,11 @@ color_codes = {
 
 @app.route('/')
 def hello():
-  return render_template('index.html', hostname=socket.gethostname(),color=color_codes[COLOR])
+  return render_template('index.html', hostname=HOSTNAME,color=color_codes[COLOR])
 
 @app.route("/color")
 def color():
-    return COLOR
+    return "Hostname: {} ; Color: {}".format(HOSTNAME, COLOR)
 
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
@@ -42,6 +42,9 @@ if __name__ == '__main__':
   if COLOR not in color_codes:
     print("Invalid color " + COLOR)
     exit(1)
+
+  # get hostname
+  HOSTNAME = socket.gethostname()
 
   app.run(host='0.0.0.0', port=80)
 
