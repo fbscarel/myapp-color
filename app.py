@@ -19,6 +19,10 @@ color_codes = {
 def hello():
   return render_template('index.html', hostname=socket.gethostname(),color=color_codes[COLOR])
 
+@app.route("/color")
+def color():
+    return COLOR
+
 if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument('-c', '--color', default='blue', required=False)
